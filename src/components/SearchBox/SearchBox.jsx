@@ -1,5 +1,4 @@
 import css from './SearchBox.module.css';
-import { IoCloseOutline } from 'react-icons/io5';
 import { useDispatch, useSelector } from 'react-redux';
 import { changeFilter } from '../../redux/filtersSlice';
 import { selectNameFilter } from '../../redux/selectors';
@@ -22,7 +21,9 @@ const SearchBox = () => {
       <p className={css.inputText}>Find contacts by name</p>
       <div className={css.container}>
         <input className={css.formInput} type='text' value={searchValue} onChange={handelInputSearch} />
-        <IoCloseOutline className={css.iconClean} size='20' onClick={cleanInput} />
+        <button className={css.cleanButton} onClick={cleanInput}>
+          Clear
+        </button>
       </div>
     </div>
   );
