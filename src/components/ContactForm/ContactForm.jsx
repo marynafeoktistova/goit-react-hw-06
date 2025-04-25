@@ -1,8 +1,10 @@
-import { Formik, Form, Field, ErrorMessage } from 'formik';
+import { ErrorMessage, Field, Form, Formik } from 'formik';
 import { useId } from 'react';
 import * as Yup from 'yup';
-import { nanoid } from 'nanoid';
-import s from './Contact.module.css';
+import css from './Contact.module.css';
+import { useDispatch } from 'react-redux';
+import { initialValues } from '../../redux/contacts.js';
+import { addContact } from '../../redux/contactsSlice';
 
 const FeedbackSchema = Yup.object().shape({
   name: Yup.string().min(3, 'Too Short!').max(50, 'Too Long!').required('Required'),
@@ -11,46 +13,58 @@ const FeedbackSchema = Yup.object().shape({
     .required('Required'),
 });
 
-const initialValues = {
-  name: '',
-  number: '',
-};
+const ContactForm = () => {
+  const dispatch = useDispatch();
 
-const ContactForm = ({ addContact }) => {
-  const nameFieldId = useId();
-  const numberFieldId = useId();
+  const nameId = useId();
+  const numberId = useId();
+
   const handleSubmit = (values, actions) => {
-    addContact({
-      id: nanoid(),
-      name: values.name,
-      number: values.number,
-    });
-
+    dispatch(addContact(values));
     actions.resetForm();
   };
 
   return (
     <Formik initialValues={initialValues} onSubmit={handleSubmit} validationSchema={FeedbackSchema}>
-      <Form className={s.containerForm}>
-        <div className={s.thumb}>
-          <label className={s.label} htmlFor={nameFieldId}>
+      {({ errors, touched }) => (
+        <Form className={css.containerForm}>
+          <label className={css.formLabel} htmlFor={nameId}>
             Name
           </label>
-          <Field className={s.formInput} type='text' name='name' id={nameFieldId} placeholder='Name' />
-          <ErrorMessage className={s.errorName} name='name' component='span' />
-        </div>
-        <div className={s.thumb}>
-          <label className={s.label} htmlFor={numberFieldId}>
+
+          <div className={css.thumb}>
+            <Field
+              className={`${css.formInput} ${errors.name && touched.name && css.errorName}`}
+              type='text'
+              name='name'
+              id={nameId}
+              placeholder='Name'
+            />
+          </div>
+          <ErrorMessage className={css.errorSpan} name='name' component='span' />
+
+          <label className={css.formLabel} htmlFor={numberId}>
             Number
           </label>
-          <Field className={s.formInput} type='text' name='number' id={numberFieldId} placeholder='123-45-67' />
-          <ErrorMessage className={s.errorName} name='number' component='span' />
-        </div>
-        <button className={s.buttonAdd} type='submit'>
-          Add contact
-        </button>
-      </Form>
+
+          <div className={css.thumb}>
+            <Field
+              className={`${css.formInput} ${errors.number && touched.number && css.errorNumber}`}
+              type='text'
+              name='number'
+              id={numberId}
+              placeholder='xxx-xx-xx'
+            />
+          </div>
+          <ErrorMessage className={css.errorSpan} name='number' component='span' />
+
+          <button className={css.buttonAdd} type='submit'>
+            Add contact
+          </button>
+        </Form>
+      )}
     </Formik>
   );
 };
+
 export default ContactForm;
