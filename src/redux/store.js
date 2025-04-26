@@ -5,7 +5,7 @@ import { persistStore, persistReducer, FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, 
 import storage from 'redux-persist/lib/storage';
 
 const rootReducer = combineReducers({
-  items: contactsReducer,
+  contacts: contactsReducer,
   filters: filterReducer,
 });
 
